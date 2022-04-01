@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">RepTime</string>
+    <string name="create_workout_bottom_nav_tab">Create Workout</string>
+    <string name="choose_workout_bottom_nav_tab">Choose Workout</string>
+    <string name="history_bottom_nav_tab">History</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

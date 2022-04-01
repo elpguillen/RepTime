@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/createWorkoutFragment">
+
+    <fragment
+        android:id="@+id/createWorkoutFragment"
+        android:name="com.chiu.reptime.fragments.CreateWorkoutFragment"
+        android:label="fragment_create_workout"
+        tools:layout="@layout/fragment_create_workout" />
+    <fragment
+        android:id="@+id/workoutListFragment"
+        android:name="com.chiu.reptime.fragments.WorkoutListFragment"
+        android:label="fragment_workout_list"
+        tools:layout="@layout/fragment_workout_list" />
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.chiu.reptime.fragments.HistoryFragment"
+        android:label="fragment_history"
+        tools:layout="@layout/fragment_history" />
+</navigation>

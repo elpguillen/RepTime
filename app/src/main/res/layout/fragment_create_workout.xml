@@ -1,14 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.CreateWorkoutFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Create Workout Fragment" />
+    <NumberPicker
+        android:id="@+id/hour_rep_timer_np"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/create_workout_guideline"
+        app:layout_constraintEnd_toStartOf="@+id/minute_rep_timer_np"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</FrameLayout>
+    <NumberPicker
+        android:id="@+id/minute_rep_timer_np"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/create_workout_guideline"
+        app:layout_constraintEnd_toStartOf="@id/second_rep_timer_np"
+        app:layout_constraintStart_toEndOf="@id/hour_rep_timer_np"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <NumberPicker
+        android:id="@+id/second_rep_timer_np"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/create_workout_guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/minute_rep_timer_np"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <NumberPicker
+        android:id="@+id/minute_rest_timer_np"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/second_rest_timer_np"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/create_workout_guideline" />
+
+    <NumberPicker
+        android:id="@+id/second_rest_timer_np"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/minute_rest_timer_np"
+        app:layout_constraintTop_toBottomOf="@id/create_workout_guideline" />
+
+    <Button
+        android:id="@+id/start_workout_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/start"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/save_workout_btn"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/save_workout_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/start_workout_btn"
+        app:layout_constraintTop_toTopOf="@id/start_workout_btn" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/create_workout_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <TextView
+        android:id="@+id/rep_timer_hour_unit_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/timer_unit_default_margin_label"
+        android:text="@string/hour_unit"
+        app:layout_constraintBottom_toBottomOf="@+id/hour_rep_timer_np"
+        app:layout_constraintEnd_toEndOf="@+id/hour_rep_timer_np"
+        app:layout_constraintStart_toStartOf="@+id/hour_rep_timer_np"
+        app:layout_constraintTop_toTopOf="@+id/hour_rep_timer_np" />
+
+    <TextView
+        android:id="@+id/rep_timer_minute_unit_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/timer_unit_margin_label"
+        android:text="@string/minute_unit"
+        app:layout_constraintBottom_toBottomOf="@+id/minute_rep_timer_np"
+        app:layout_constraintEnd_toEndOf="@+id/minute_rep_timer_np"
+        app:layout_constraintStart_toStartOf="@+id/minute_rep_timer_np"
+        app:layout_constraintTop_toTopOf="@+id/minute_rep_timer_np" />
+
+    <TextView
+        android:id="@+id/rep_timer_second_unit_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/timer_unit_default_margin_label"
+        android:text="@string/second_unit"
+        app:layout_constraintBottom_toBottomOf="@+id/second_rep_timer_np"
+        app:layout_constraintEnd_toEndOf="@+id/second_rep_timer_np"
+        app:layout_constraintStart_toStartOf="@+id/second_rep_timer_np"
+        app:layout_constraintTop_toTopOf="@+id/second_rep_timer_np" />
+
+    <TextView
+        android:id="@+id/rest_timer_minute_unit_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/timer_unit_margin_label"
+        android:text="@string/minute_unit"
+        app:layout_constraintBottom_toBottomOf="@+id/minute_rest_timer_np"
+        app:layout_constraintEnd_toEndOf="@+id/minute_rest_timer_np"
+        app:layout_constraintStart_toStartOf="@+id/minute_rest_timer_np"
+        app:layout_constraintTop_toTopOf="@+id/create_workout_guideline" />
+
+    <TextView
+        android:id="@+id/rest_timer_second_unit_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/timer_unit_default_margin_label"
+        android:text="@string/second_unit"
+        app:layout_constraintBottom_toBottomOf="@+id/second_rest_timer_np"
+        app:layout_constraintEnd_toEndOf="@+id/second_rest_timer_np"
+        app:layout_constraintStart_toStartOf="@+id/second_rest_timer_np"
+        app:layout_constraintTop_toTopOf="@+id/second_rest_timer_np" />
+
+    <EditText
+        android:id="@+id/number_rep_input"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/start_workout_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/minute_rest_timer_np" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

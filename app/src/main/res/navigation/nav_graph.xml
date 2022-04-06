@@ -9,7 +9,11 @@
         android:id="@+id/createWorkoutFragment"
         android:name="com.chiu.reptime.fragments.CreateWorkoutFragment"
         android:label="fragment_create_workout"
-        tools:layout="@layout/fragment_create_workout" />
+        tools:layout="@layout/fragment_create_workout" >
+        <action
+            android:id="@+id/action_createWorkoutFragment_to_workoutFragment"
+            app:destination="@id/workoutFragment" />
+    </fragment>
     <fragment
         android:id="@+id/workoutListFragment"
         android:name="com.chiu.reptime.fragments.WorkoutListFragment"
@@ -20,4 +24,9 @@
         android:name="com.chiu.reptime.fragments.HistoryFragment"
         android:label="fragment_history"
         tools:layout="@layout/fragment_history" />
+    <fragment
+        android:id="@+id/workoutFragment"
+        android:name="com.chiu.reptime.fragments.WorkoutFragment"
+        android:label="fragment_workout"
+        tools:layout="@layout/fragment_workout" />
 </navigation>

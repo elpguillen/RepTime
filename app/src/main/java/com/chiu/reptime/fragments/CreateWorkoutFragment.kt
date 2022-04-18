@@ -10,6 +10,9 @@ import android.view.ViewGroup
 import com.chiu.reptime.R
 import com.chiu.reptime.databinding.FragmentCreateWorkoutBinding
 import android.widget.NumberPicker
+import androidx.navigation.findNavController
+import com.chiu.reptime.models.RepTimer
+import com.chiu.reptime.models.RestTimer
 
 /**
  * Fragment that will be used to help create workouts.
@@ -40,7 +43,7 @@ class CreateWorkoutFragment : Fragment() {
 
         setTimerMaxMinValues()
 
-        // get SharedPreferences to save [NumberPicker] values
+        // get instance of SharedPreferences to save [NumberPicker] values
         val sharedPref = activity?.getSharedPreferences(
             getString(R.string.shared_preference_file_key),
             Context.MODE_PRIVATE) ?: return
@@ -49,6 +52,31 @@ class CreateWorkoutFragment : Fragment() {
         restorePickerValues(sharedPref)
         // start listening for any value change for each [NumberPicker]
         setUpPickerChangeListeners(sharedPref)
+
+        // start an onClickListener for when user presses Start Workout Button
+        binding.startWorkoutBtn.setOnClickListener {
+
+            // Get the RepTimer and ResTimer from [NumberPicker] values
+            val repTimer = getRepTimer()
+            val restTimer = getRestTimer()
+
+            // make sure to check for valid input
+            // what if someone doesn't put any input?
+            var numberRepsString: String = binding.numberRepInput.text.toString()
+            val numberReps: Int = if (numberRepsString != "") numberRepsString.toInt() else 0
+
+            val action =
+                CreateWorkoutFragmentDirections.
+                    actionCreateWorkoutFragmentToWorkoutFragment(
+                        repTimer, restTimer, numberReps)
+
+            it.findNavController().navigate(action)
+        }
+
+        // start an onClickListener for when user presses Save Workout Button
+        binding.saveWorkoutBtn.setOnClickListener {
+            // save workout to Room database
+        }
     }
 
     /**
@@ -88,24 +116,39 @@ class CreateWorkoutFragment : Fragment() {
 
         binding.hourRepTimerNp.setOnValueChangedListener { picker, oldVal, newVal ->
             with(sharedPreferences.edit()) {
-                putInt(getString(R.string.create_workout_hour_key), newVal)
+                putInt(getString(R.string.rep_timer_hour_key), newVal)
                 apply()
             }
         }
 
         binding.minuteRepTimerNp.setOnValueChangedListener { picker, oldVal, newVal ->
             with(sharedPreferences.edit()) {
-                putInt(getString(R.string.create_workout_minute_key), newVal)
+                putInt(getString(R.string.rep_timer_minute_key), newVal)
                 apply()
             }
         }
 
         binding.secondRepTimerNp.setOnValueChangedListener { picker, oldVal, newVal ->
             with(sharedPreferences.edit()) {
-                putInt(getString(R.string.create_workout_second_key), newVal)
+                putInt(getString(R.string.rep_timer_second_key), newVal)
                 apply()
             }
         }
+
+        binding.minuteRestTimerNp.setOnValueChangedListener { picker, oldVal, newVal ->
+            with(sharedPreferences.edit()) {
+                putInt(getString(R.string.rest_timer_minute_key), newVal)
+                apply()
+            }
+        }
+
+        binding.secondRestTimerNp.setOnValueChangedListener { picker, oldVal, newVal ->
+            with(sharedPreferences.edit()) {
+                putInt(getString(R.string.rest_timer_second_key), newVal)
+                apply()
+            }
+        }
+
     }
 
     /**
@@ -115,9 +158,30 @@ class CreateWorkoutFragment : Fragment() {
      * @param sharedPreferences the instance of [SharedPreferences] to save into
      */
     private fun restorePickerValues(sharedPreferences: SharedPreferences) {
-        binding.hourRepTimerNp.value = sharedPreferences.getInt(getString(R.string.create_workout_hour_key), 0)
-        binding.minuteRepTimerNp.value = sharedPreferences.getInt(getString(R.string.create_workout_minute_key), 0)
-        binding.secondRepTimerNp.value = sharedPreferences.getInt(getString(R.string.create_workout_second_key), 0)
+
+        // Restore values corresponding to the RepTimer
+        binding.hourRepTimerNp.value = sharedPreferences.getInt(getString(R.string.rep_timer_hour_key), 0)
+        binding.minuteRepTimerNp.value = sharedPreferences.getInt(getString(R.string.rep_timer_minute_key), 0)
+        binding.secondRepTimerNp.value = sharedPreferences.getInt(getString(R.string.rep_timer_second_key), 0)
+
+        // Restore values corresponding to the RestTimer
+        binding.minuteRestTimerNp.value = sharedPreferences.getInt(getString(R.string.rest_timer_minute_key), 0)
+        binding.secondRestTimerNp.value = sharedPreferences.getInt(getString(R.string.rest_timer_second_key), 0)
+    }
+
+    private fun getRepTimer(): RepTimer{
+        val hour: Int = binding.hourRepTimerNp.value
+        val minute: Int = binding.minuteRepTimerNp.value
+        val second: Int = binding.secondRepTimerNp.value
+
+        return RepTimer(hour, minute, second)
+    }
+
+    private fun getRestTimer(): RestTimer {
+        val minute: Int = binding.minuteRestTimerNp.value
+        val second: Int = binding.secondRestTimerNp.value
+
+        return RestTimer(minute, second)
     }
 
 }

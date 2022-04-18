@@ -28,5 +28,15 @@
         android:id="@+id/workoutFragment"
         android:name="com.chiu.reptime.fragments.WorkoutFragment"
         android:label="fragment_workout"
-        tools:layout="@layout/fragment_workout" />
+        tools:layout="@layout/fragment_workout" >
+        <argument
+            android:name="rep_timer"
+            app:argType="com.chiu.reptime.models.RepTimer" />
+        <argument
+            android:name="rest_timer"
+            app:argType="com.chiu.reptime.models.RestTimer" />
+        <argument
+            android:name="number_of_reps"
+            app:argType="integer" />
+    </fragment>
 </navigation>

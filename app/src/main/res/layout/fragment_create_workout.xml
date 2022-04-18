@@ -141,6 +141,7 @@
         android:layout_height="wrap_content"
         android:inputType="number"
         android:gravity="center"
+        android:hint="0"
         app:layout_constraintBottom_toTopOf="@+id/start_workout_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

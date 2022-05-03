@@ -13,6 +13,7 @@
     <string name="second_unit">s</string>
 
     <string name="reps_remaining">Reps Remaining:</string>
+    <string name="number_reps_label"># Reps</string>
 
     <!-- keys for SharedPreferences -->
     <string name="shared_preference_file_key">com.chiu.reptime.SHARED_PREFERENCE_FILE_KEY</string>

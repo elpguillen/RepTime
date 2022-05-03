@@ -2,6 +2,7 @@ package com.chiu.reptime.fragments
 
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +36,12 @@ class WorkoutFragment : Fragment() {
     private var repCountDownTimer: CountDownTimer? = null
     private var restCountDownTimer: CountDownTimer? = null
 
+    private lateinit var repTimer: RepTimer
+    private lateinit var restTimer: RestTimer
+    private var numberReps: Int = 0
+
+    private val WORKOUT_TAG = "WORKOUT_FRAGMENT"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -51,12 +58,8 @@ class WorkoutFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val repTimer = args.repTimer
-        val restTimer = args.restTimer
-        val numberReps = args.numberOfReps
-
-        repTotalTime = (repTimeToSeconds(repTimer) * constants.MILLISECONS_IN_SECOND) + constants.MILLISECONS_IN_SECOND
-        restTotalTime = (restTimeToSeconds(restTimer) * constants.MILLISECONS_IN_SECOND) + constants.MILLISECONS_IN_SECOND
+        getWorkoutFragmentArgs()
+        updateRepAndRestTime()
 
         binding.pbTimer.progress = constants.PROGRESS_BAR_FULL
 
@@ -70,6 +73,9 @@ class WorkoutFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+
+        repCountDownTimer?.cancel()
+        restCountDownTimer?.cancel()
     }
 
     /**
@@ -80,12 +86,16 @@ class WorkoutFragment : Fragment() {
      */
     private fun startRepCounter(totalTime: Long, numReps: Int) {
         repCountDownTimer?.cancel()
+        restCountDownTimer?.cancel()
+
+        binding.pbTimer.progress = constants.PROGRESS_BAR_FULL
 
         binding.remainingRepsLabel.text = numReps.toString()
 
         timeLeft = totalTime
 
         repCountDownTimer = object : CountDownTimer(totalTime, constants.MILLISECONS_IN_SECOND.toLong()) {
+
             override fun onTick(millisUntilFinished: Long) {
                 // TODO: Have [ProgressBar] change progress based on time elapsed.
                 binding.timerLabel.text = formatTimerDisplay((timeLeft/constants.MILLISECONS_IN_SECOND) - 1)
@@ -101,37 +111,59 @@ class WorkoutFragment : Fragment() {
             }
 
             override fun onFinish() {
-                // when the repCounter is done, must check to see
-                // how many more reps are left to do:
-                //    if there are more reps to do, start the rest timer
-                //    else stop the timer
-
+                /*  Continue workout as long as more repetitions remain:
+                 *      if user has selected a rest time then:
+                 *          start the rest timer
+                 *      else:
+                 *         start another rep timer
+                 */
                 if (numReps > 1) {
-                    /* TODO: when there are still reps to do, then start
-                     *        a rest timer before continuing to do another
-                     *          rep.
+                    /*  Check to see when no rest time is set:
+                     *    no rest time given means jump straight into the
+                     *    next repetition
                      */
-                    startRepCounter(repTotalTime, numReps - 1)
+                    if (restTotalTime > 1000L) {
+                        //Log.v(WORKOUT_TAG, restTotalTime.toString())
+                        startRestTimer(restTotalTime, numReps)
+                    } else {
+                        startRepCounter(repTotalTime, numReps - 1)
+                    }
+
+                } else {
+                    onWorkoutComplete()
                 }
             }
         }.start()
     }
 
-    /*private fun startRestTimer() {
-
+    /**
+     * Starts a counter for the amount of time to rest between repetition.
+     *
+     * @param totalTime the total amount of time to rest between repetition
+     * @param repsRemaining the total number of repetitions remaining
+     */
+    private fun startRestTimer(totalTime: Long, repsRemaining: Int) {
+        repCountDownTimer?.cancel()
         restCountDownTimer?.cancel()
 
-        restCountDownTimer = object : CountDownTimer(0, 1000) {
+        binding.pbTimer.progress = constants.PROGRESS_BAR_EMPTY
+
+        timeLeft = totalTime
+
+        restCountDownTimer = object : CountDownTimer(totalTime, constants.MILLISECONS_IN_SECOND.toLong()) {
+
             override fun onTick(millisUntilFinished: Long) {
-                TODO("Not yet implemented")
+                binding.timerLabel.text = formatTimerDisplay((timeLeft/constants.MILLISECONS_IN_SECOND) - 1)
+                timeLeft -= constants.MILLISECONS_IN_SECOND
             }
 
             override fun onFinish() {
-                TODO("Not yet implemented")
+                if (repsRemaining > 1) {
+                    startRepCounter(repTotalTime,repsRemaining - 1)
+                }
             }
-
         }.start()
-    }*/
+    }
 
     /**
      * Converts the hour(s), minute(s), seconds(s) in [RepTimer] to seconds.
@@ -190,5 +222,31 @@ class WorkoutFragment : Fragment() {
         binding.remainingRepsLabel.text = "0"
         binding.timerLabel.text = "0"
         binding.pbTimer.progress = 0
+    }
+
+    /**
+     *  Events to happen after a workout is completed, such as
+     *  changing UI display, updating history, etc.
+     */
+    private fun onWorkoutComplete() {
+        binding.timerLabel.text = "Done"
+    }
+
+    /**
+     *   Obtain the total time for each repetition and the rest time in between repetitions
+     *   from the passed in values from [CreateWorkoutFragment].
+     */
+    private fun updateRepAndRestTime() {
+        repTotalTime = (repTimeToSeconds(repTimer) * constants.MILLISECONS_IN_SECOND) + constants.MILLISECONS_IN_SECOND
+        restTotalTime = (restTimeToSeconds(restTimer) * constants.MILLISECONS_IN_SECOND) + constants.MILLISECONS_IN_SECOND
+    }
+
+    /**
+     *  Retrieve the the arguments passed in from [CreateWorkoutFragment].
+     */
+    private fun getWorkoutFragmentArgs() {
+        repTimer  = args.repTimer
+        restTimer = args.restTimer
+        numberReps = args.numberOfReps
     }
 }

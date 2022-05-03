@@ -8,4 +8,5 @@ object constants {
     val HOUR_TO_SECONDS = MINUTES_IN_HOUR * SECONDS_IN_MINUTE
 
     val PROGRESS_BAR_FULL = 100
+    val PROGRESS_BAR_EMPTY = 0
 }

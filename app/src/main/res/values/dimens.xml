@@ -2,4 +2,7 @@
 <resources>
     <dimen name="timer_unit_default_margin_label">32dp</dimen>
     <dimen name="timer_unit_margin_label">36dp</dimen>
+
+    <dimen name="reps_label_size">24sp</dimen>
+    <dimen name="timer_label_size">48sp</dimen>
 </resources>

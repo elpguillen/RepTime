@@ -10,30 +10,30 @@
         android:id="@+id/hour_rep_timer_np"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/workout_name_input"
         app:layout_constraintBottom_toTopOf="@id/create_workout_guideline"
         app:layout_constraintEnd_toStartOf="@+id/minute_rep_timer_np"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <NumberPicker
         android:id="@+id/minute_rep_timer_np"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/workout_name_input"
         app:layout_constraintBottom_toTopOf="@id/create_workout_guideline"
         app:layout_constraintEnd_toStartOf="@id/second_rep_timer_np"
-        app:layout_constraintStart_toEndOf="@id/hour_rep_timer_np"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/hour_rep_timer_np" />
 
     <NumberPicker
         android:id="@+id/second_rep_timer_np"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/workout_name_input"
         app:layout_constraintBottom_toTopOf="@id/create_workout_guideline"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/minute_rep_timer_np"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/minute_rep_timer_np" />
 
     <NumberPicker
         android:id="@+id/minute_rest_timer_np"
@@ -147,6 +147,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/minute_rest_timer_np" />
+
+    <EditText
+        android:id="@+id/workout_name_input"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/workout_name_label"
+        android:gravity="center"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toTopOf="@id/hour_rep_timer_np"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

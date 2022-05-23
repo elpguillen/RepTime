@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import com.chiu.reptime.R
+import com.chiu.reptime.WorkoutApplication
+import com.chiu.reptime.WorkoutViewModel
 import com.chiu.reptime.databinding.FragmentHistoryBinding
 
 /**
@@ -14,6 +17,12 @@ import com.chiu.reptime.databinding.FragmentHistoryBinding
  * create an instance of this fragment.
  */
 class HistoryFragment : Fragment() {
+
+    private val viewModel: WorkoutViewModel by activityViewModels {
+        WorkoutViewModel.WorkoutViewModelFactory(
+            (activity?.application as WorkoutApplication).repository
+        )
+    }
 
     private var _binding: FragmentHistoryBinding? = null
     private val binding get() = _binding!!

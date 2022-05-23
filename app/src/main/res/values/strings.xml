@@ -14,6 +14,7 @@
 
     <string name="reps_remaining">Reps Remaining:</string>
     <string name="number_reps_label"># Reps</string>
+    <string name="workout_name_label">Workout Name</string>
 
     <!-- keys for SharedPreferences -->
     <string name="shared_preference_file_key">com.chiu.reptime.SHARED_PREFERENCE_FILE_KEY</string>
@@ -22,4 +23,6 @@
     <string name="rep_timer_second_key">com.chiu.reptime.REP_TIMER_SECOND_KEY</string>
     <string name="rest_timer_minute_key">com.chiu.reptime.REST_TIMER_MINUTE_KEY</string>
     <string name="rest_timer_second_key">com.chiu.reptime.REST_TIMER_SECOND_KEY</string>
+    <string name="workout_name_key">com.chiu.reptime.WORKOUT_NAME_KEY</string>
+    <string name="number_reps_key">com.chiuu.reptime.NUMBER_REPS_KEY</string>
 </resources>

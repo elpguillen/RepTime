@@ -1,16 +1,15 @@
 package com.chiu.reptime.data
 
 import androidx.annotation.NonNull
-import androidx.room.ColumnInfo
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.chiu.reptime.models.RepTimer
 import com.chiu.reptime.models.RestTimer
 
-@Entity(tableName = "workouts")
+@Entity(
+    tableName = "workouts",
+    indices = [Index(value=["name"], unique = true)])
 data class Workout(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = true) // by default it starts at '1'
     val id: Int = 0,
     @Embedded val repTimer: RepTimer,
     @Embedded val restTimer: RestTimer,

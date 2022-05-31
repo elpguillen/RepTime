@@ -37,6 +37,15 @@ interface WorkoutDao {
     suspend fun deleteWorkouts()
 
     /**
+     *  Returns the number of [Workout]s (rows) that are
+     *  present in the database.
+     *
+     *  @return  the number of [Workout]s in the database
+     */
+    @Query("SELECT COUNT(*) FROM workouts")
+    fun getNumberWorkouts(): Flow<Int>
+
+    /**
      *  Retrieve all items from the [Workout] table.
      *
      *  @return  all items in [Workout] table
@@ -46,9 +55,9 @@ interface WorkoutDao {
 
     /**
      *  Retrieves all items from the [Workout] table in
-     *  ascending order.
+     *  ascending order by 'name'.
      *
-     *  @return  all items in [Workout] table in ascending order
+     *  @return  all items in [Workout] table in ascending order by 'name'
      */
     @Query("SELECT * FROM workouts ORDER BY name")
     fun getAlphabetizedWorkouts(): Flow<List<Workout>>

@@ -10,7 +10,7 @@ import com.chiu.reptime.models.RestTimer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@Database(entities = arrayOf(Workout::class), version = 1, exportSchema = false)
+@Database(entities = arrayOf(Workout::class), version = 2, exportSchema = false)
 abstract class WorkoutRoomDatabase : RoomDatabase() {
 
     abstract fun workoutDao(): WorkoutDao

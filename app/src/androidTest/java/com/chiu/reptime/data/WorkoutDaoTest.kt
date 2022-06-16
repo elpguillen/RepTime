@@ -2,15 +2,12 @@ package com.chiu.reptime.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.asLiveData
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.chiu.reptime.*
-import com.chiu.reptime.models.RepTimer
-import com.chiu.reptime.models.RestTimer
 import junit.framework.TestCase
 import kotlinx.coroutines.runBlocking
 import org.junit.*
@@ -28,7 +25,7 @@ class WorkoutDaoTest {
 
     private lateinit var workouts: ArrayList<Workout>
 
-    // sets up before each test
+    // Set up before each test
     @Before
     fun setUp() {
         val context = ApplicationProvider.getApplicationContext<Context>()
@@ -38,49 +35,56 @@ class WorkoutDaoTest {
             .build()
 
         workoutDao = workoutDatabase.workoutDao()
-
-        // make sure that a new set of workouts is created for each test
         workouts = ArrayList()
     }
 
-    // actions to take after each test
+    // Actions to take after each test
     @After
     fun closeDb() {
         workoutDatabase.close()
         workouts.clear()
     }
 
-    // test to check if write and read from the database works correctly
+    /**
+     *  Test to check that 'inserts' and reads via 'getWorkout' work as intended.
+     */
     @Test
     fun writeAndReadWorkout() = runBlocking {
-        val repTimerWorkOne: RepTimer = RepTimer(11,11,11)
-        val restTimerWorkOne: RestTimer = RestTimer(1,1)
-        val workout = Workout(0, repTimerWorkOne, restTimerWorkOne, 2, "Workout One")
+        // Test data from DataUtil to use for this testcase
+        val testTimer: Triple<Int, Int, Int> = timerTimesList[0]
+        val numberReps: Int = numberRepsList[2]
+        val workoutName: String = nameList[0]
 
-        /*var repTimerWorkTwo: RepTimer = RepTimer(22, 22, 22)
-        var restTimerWorkTwo: RestTimer = RestTimer(2,2)
-        val workout2 = Workout(0, repTimerWorkTwo, restTimerWorkTwo, 5, "Workout Two")*/
-
+        val workout = createWorkout(testTimer.first, testTimer.second, testTimer.third,
+                                        numberReps, workoutName, 1)
         workoutDao.insert(workout)
-        //workoutDao.insert(workout2)
 
-        val firstWorkout: Workout = workoutDao.getWorkout("Workout One").asLiveData().getOrAwaitValue()
+        val workoutRetrieved: Workout = workoutDao.getWorkout(workoutName).asLiveData().getOrAwaitValue()
 
-        TestCase.assertEquals("Write and Read to Workout Database did not succeeded.",
-            firstWorkout.name,"Workout One")
+        // Test to make sure that all values from the created/inserted Workout
+        // match the values from the Workout retrieved.
+        TestCase.assertTrue(
+            workoutMismatchOutputMessage(workout, workoutRetrieved),
+            workoutsAreEqual(workout, workoutRetrieved)
+        )
     }
 
+    /**
+     *  Checks to make sure that 'getNumberWorkouts' retrieves the total number of
+     *  [Workout]s that have been inserted into the database.
+     */
     @Test
     fun countWorkouts() = runBlocking {
-        // Database should be empty at this point
+        // Each test starts with a new Database so it should be empty
         var numWorkouts: Int = workoutDao.getNumberWorkouts().asLiveData().getOrAwaitValue()
+
         TestCase.assertEquals(
             "The database should have been empty.",
             0,
             numWorkouts
         )
 
-        createWorkouts(workouts)
+        createUniqueWorkouts(workouts)
 
         // add one workout and test that the right number of workouts
         // is returned by 'getNumberWorkouts'
@@ -92,7 +96,18 @@ class WorkoutDaoTest {
             numWorkouts
         )
 
-        // insert all the created and workouts and test 'getNumberWorkouts'
+        // test to check 'getNumberWorkouts' returns no workouts after
+        // database has been deleted.
+        workoutDao.deleteWorkouts()
+        numWorkouts = workoutDao.getNumberWorkouts().asLiveData().getOrAwaitValue()
+        TestCase.assertEquals(
+            "Database should be empty after clearing it.",
+            0,
+            numWorkouts
+        )
+
+        // insert all the created and workouts and test that 'getNumberWorkouts'
+        // returns a value equal to the number of items in workout arraylist
         for (index in 0 until workouts.size) {
             workoutDao.insert(workouts[index])
         }
@@ -105,17 +120,21 @@ class WorkoutDaoTest {
         )
     }
 
-    // test to check if all workouts are retrieved via 'getAllWorkouts'
+    /**
+     *  Checks whether 'getAllWorkouts' retrieves all the [Workout]s
+     *  inserted into the database.
+     */
     @Test
     fun retrieveAllWorkouts() = runBlocking {
 
         // Test to make sure Database is empty
         val allWorkouts: List<Workout> = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
-        TestCase.assertEquals("The database should have been empty.", 0, allWorkouts.size)
+
+        assert(allWorkouts.isEmpty()) { "The database should have been empty." }
 
         // Test to make sure all items are inserted and that
         // "getAllWorkouts" retrieves all the workouts from the database
-        createWorkouts(workouts)
+        createUniqueWorkouts(workouts)
 
         for (item in 0 until workouts.size) {
             workoutDao.insert(workouts[item])
@@ -124,145 +143,123 @@ class WorkoutDaoTest {
         val retrievedWorkouts = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
         TestCase.assertEquals(
             "The number of items inserted does not match items retrieved.",
-            minOf(timerTimesList.size, numberRepsList.size, nameList.size),
+            workouts.size,
             retrievedWorkouts.size)
     }
 
-    // test for checking database gets cleared via 'deleteWorkouts'
+    /**
+     *  Checks to see if 'deleteWorkouts' removes all data in the database.
+     */
     @Test
     fun clearDatabase() = runBlocking {
-        createWorkouts(workouts)
+
+        // The database should be empty at beginning of test.
+        var retrievedWorkouts = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
+        assert(retrievedWorkouts.isEmpty()) { "Database should have been empty." }
+
+        createUniqueWorkouts(workouts)
 
         for (item in 0 until workouts.size) {
             workoutDao.insert(workouts[item])
         }
 
         // Test to make sure workouts are being inserted into database
-        val retrievedWorkouts = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
+        retrievedWorkouts = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
         TestCase.assertEquals(
             "The number of items inserted does not match items retrieved.",
-            minOf(timerTimesList.size, numberRepsList.size, nameList.size),
+            workouts.size,
             retrievedWorkouts.size
         )
 
         workoutDao.deleteWorkouts()
 
         val retrieveAfterDelete = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
-        TestCase.assertEquals(
-            "Not all items were deleted",
-            0,
-            retrieveAfterDelete.size
-        )
+        assert(retrieveAfterDelete.isEmpty()) { "Not all items were deleted." }
 
-        //  lets try deleting database when there is nothing in it
+        // Try deleting database when there is nothing in it
         workoutDao.deleteWorkouts()
         val retrieveAfterDeleteOnEmpty = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
-        TestCase.assertEquals(
-            "There should have been nothing to delete.",
-            0,
-            retrieveAfterDeleteOnEmpty.size
-        )
+        assert(retrieveAfterDeleteOnEmpty.isEmpty()) { "The database should be empty." }
     }
 
-    // test for inserting specific workout via 'getWorkout(name)'
+    /**
+     *  Test for inserting specific [Workout] via 'getWorkout(name)'
+     */
     @Test
     fun insertWorkout() = runBlocking {
-        createWorkouts(workouts)
 
-        workoutDao.insert(workouts[0])
+        val workoutOneDataIndex = 1
+        val workoutOne = createWorkout(
+            timerTimesList[workoutOneDataIndex].first, timerTimesList[workoutOneDataIndex].second,
+            timerTimesList[workoutOneDataIndex].third, numberRepsList[workoutOneDataIndex],
+            nameList[workoutOneDataIndex], workoutOneDataIndex)
 
-        val firstWorkout = workoutDao.getWorkout("Zero").asLiveData().getOrAwaitValue()
+        workoutDao.insert(workoutOne)
+
         var retrievedWorkouts = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
+
         TestCase.assertEquals(
-            "Only one item should have been inserted",
+            "There should only be one item in database at this point.",
             1,
             retrievedWorkouts.size
         )
 
-        TestCase.assertEquals(
-            "Name of retrieved workout does not match the name of the workout that was inserted.",
-            "Zero",
-            firstWorkout.name
+        val workoutTwoDataIndex = 2
+        val workoutTwo = createWorkout(
+            timerTimesList[workoutTwoDataIndex].first, timerTimesList[workoutTwoDataIndex].second,
+            timerTimesList[workoutTwoDataIndex].third, numberRepsList[workoutTwoDataIndex],
+            nameList[workoutTwoDataIndex], workoutTwoDataIndex
         )
 
-        workoutDao.insert(workouts[1])
+        workoutDao.insert(workoutTwo)
 
-        val secondWorkout = workoutDao.getWorkout("One").asLiveData().getOrAwaitValue()
         retrievedWorkouts = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
 
         TestCase.assertEquals(
-            "There should be two items inserted at this point.",
+            "There should only be two items in the database at this point.",
             2,
             retrievedWorkouts.size
         )
 
-        TestCase.assertEquals(
-            "Name of retrieved workout does not match the name of the workout that was inserted",
-            "One",
-            secondWorkout.name
+        val retrievedWorkoutOne = workoutDao.getWorkout(nameList[workoutOneDataIndex]).asLiveData().getOrAwaitValue()
+        val retrievedWorkoutTwo = workoutDao.getWorkout(nameList[workoutTwoDataIndex]).asLiveData().getOrAwaitValue()
+        val retrieveNonExistantWorkout = workoutDao.getWorkout("does not exist").asLiveData().getOrAwaitValue()
+
+        // Case: Workout trying to retrieve is not in the database
+        TestCase.assertNull(
+            "should return null since Workout that was attempted to retrieve is not in database",
+            retrieveNonExistantWorkout)
+
+        // Case: Workout inserted into database should match with Workout
+        //          retrieved with same name from the database.
+        TestCase.assertTrue(
+            "Workouts do not match.",
+            workoutsAreEqual(workoutOne, retrievedWorkoutOne)
         )
 
-        // true if id's are not the same and false otherwise
-        val notSameId = (firstWorkout.id != secondWorkout.id)
-        Log.d("tag", "firstWorkout id is: ${firstWorkout.id}")
-        Log.d("tag", "secondWorout id is: ${secondWorkout.id}")
-
-        TestCase.assertEquals(
-            "Should not have same id",
-            true,
-            notSameId)
-    }
-
-    @Test
-    fun insertCount() = runBlocking {
-
-        var retrievedWorkouts: List<Workout> = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
-
-        // The database should be empty at this point.
-        TestCase.assertEquals(
-            "There should be no items in the database.",
-            0,
-            retrievedWorkouts.size
+        // Case: Workout inserted into database should match with Workout
+        //          retrieved with same name from the database.
+        TestCase.assertTrue(
+            "Workouts do not match",
+            workoutsAreEqual(workoutTwo, retrievedWorkoutTwo)
         )
 
-        createWorkouts(workouts)
-        val mid = workouts.size / 2
-
-        // insert only half of the items
-        for (index in 0 until mid) {
-            workoutDao.insert(workouts[index])
-        }
-
-        retrievedWorkouts = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
-
-        TestCase.assertEquals(
-            "Number of items inserted at this point should be half of the items that were created using 'createWorkouts'",
-            mid,
-            retrievedWorkouts.size
-        )
-
-        for (index in 0 until workouts.size) {
-            workoutDao.insert(workouts[index])
-        }
-
-        retrievedWorkouts = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
-
-        Log.d("INSERTCOUNT: ", "${workouts.size}")
-        Log.d("INSERTCOUNT: ", "${retrievedWorkouts.size}")
-
-
-        // Workout names should be unique, therefore when trying to insert the first half of the workouts
-        // the database should ignore the insertion and just insert the second half
-        TestCase.assertEquals(
-            "Number of items at this point should be equal to the total number of items created using 'createWorkouts'",
-            workouts.size,
-            retrievedWorkouts.size
+        // Case: Two different retrieved Workouts do not match. Each Workout should
+        //          be unique on id and name.
+        TestCase.assertFalse(
+            "Workouts should not have matched.",
+            workoutsAreEqual(retrievedWorkoutOne, retrievedWorkoutTwo)
         )
     }
 
+    /**
+     *  Checks to see if we can insert [Workout]s and retrieve them all via 'getAllWorkouts'
+     *  and makes sure that the inserted [Workout]s match the retrieved [Workout]s.
+     */
     @Test
     fun insertAndRetrieveAllItems() = runBlocking {
-        createWorkouts(workouts)
+
+        createUniqueWorkouts(workouts)
 
         for (workoutIndex in 0 until workouts.size) {
             workoutDao.insert(workouts[workoutIndex])
@@ -271,141 +268,96 @@ class WorkoutDaoTest {
         val retrievedWorkouts: List<Workout> = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
 
         TestCase.assertEquals(
-            "The number of workouts does not match the workouts retrieved from the database.",
+            "The number of workouts inserted does not match the workouts retrieved from the database.",
             workouts.size,
             retrievedWorkouts.size
         )
-
-        // what if workouts.size != retrievedWorkouts.size???
-        // when traversing list, you might encounter indexoutbounds
-        // will happen if test does not pass, can try to get the min
-        // of both and traverse that and test should still be kinda
-        // valid.
-
+        // add each workout to map, key will be the name of the workout
         val workoutMap: Map<String, Workout> =
             retrievedWorkouts.associateBy( {it.name}, {it} )
 
         // check that each item in workouts is found in the workouts retrieved
         // from the database
         for (index in 0 until workouts.size) {
+
             assert(workoutMap.containsKey(workouts[index].name))
-
             val workout: Workout? = workoutMap[workouts[index].name]
-            // continue test...
 
-            // make sure workout == workouts[index]
-            // repetition timers should match
-            // rest timers should match
-            // number of repetitions should match
-            // name should match (something is completely wrong if at this point matching name fails)
-            TestCase.assertEquals(
-                "The repetition timer did not match!",
-                workouts[index].repTimer,
-                workout?.repTimer
+            // Checks that [Workout] inserted matches [Workout] retrieved.
+            TestCase.assertTrue(
+                workoutMismatchOutputMessage(workouts[index], workout!!),
+                workoutsAreEqual(workouts[index], workout)
             )
-
-            TestCase.assertEquals(
-                "The rest timer did not match!",
-                workouts[index].restTimer,
-                workout?.restTimer
-            )
-
-            TestCase.assertEquals(
-                "The number of repetitions did not match!",
-                workouts[index].numberReps,
-                workout?.numberReps
-            )
-
-            TestCase.assertEquals(
-                "The name of the workouts did not match!",
-                workouts[index].name,
-                workout?.name
-            )
-
-            // skip this test since database auto increments id, unless you want to create
-            // data that specifically is made to help with this testcase
-            /*TestCase.assertEquals(
-                "The id of the workout does not match!",
-                workouts[index].id,
-                workout?.id
-            )*/
         }
     }
 
+    /**
+     *  Checks that 'getAlphabetizedWorkouts' retrieves all [Workout]s within
+     *  the database in ASCENDING order by name.
+     */
     @Test
     fun insertAndAlphabetized() = runBlocking {
-        createWorkouts(workouts)
+
+        createUniqueWorkouts(workouts)             // workouts added are not sorted in any way
 
         for (index in 0 until workouts.size) {
             workoutDao.insert(workouts[index])
         }
 
-        // get the sorted list of workouts with 'getAlphabetizedWorkouts;
+        // get the sorted (ASCENDING by name) list of workouts with 'getAlphabetizedWorkouts
         val retrievedWorkouts: List<Workout> = workoutDao.getAlphabetizedWorkouts().asLiveData().getOrAwaitValue()
-        // sort the workouts list that was created and inserted to database
+        // sort the workouts list that was created and inserted into the database
         workouts.sortBy { it.name }
 
         assert(retrievedWorkouts.size == workouts.size)
-
+        // check that retrievedWorkouts is sorted in ASCENDING order (by name) by
+        // comparing it to a sorted (by name) version of workouts.
         for (index in 0 until workouts.size) {
-            TestCase.assertEquals(
-                "The name of the workouts does not match at index: $index",
-                workouts[index].name,
-                retrievedWorkouts[index].name
+            TestCase.assertTrue(
+                workoutMismatchOutputMessage(workouts[index], retrievedWorkouts[index]),
+                workoutsAreEqual(workouts[index], retrievedWorkouts[index])
             )
         }
     }
 
+    /**
+     *  Checks that 'delete([Workout])' deletes the given [Workout] from the [Workout] database
+     *  and that 'deleteWorkouts' deletes all items from the [Workout] database.
+     */
     @Test
     fun deleteWorkouts() = runBlocking {
 
-        createWorkouts(workouts)
+        createUniqueWorkouts(workouts)
 
-        var retrievedWorkouts: List<Workout> = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
         // There should be no workouts in the database at this point
+        var retrievedWorkouts: List<Workout> = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
         assert(retrievedWorkouts.isEmpty())
 
-        // insert workouts into the database
         for (index in 0 until workouts.size) {
             workoutDao.insert(workouts[index])
         }
 
-        // retrieve all workouts inserted into the database
         retrievedWorkouts = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
-        // check id's of workouts inserted since was having issues with id matching
-        // those of 'workouts', found out problem: each workout was being given an id
-        // of 0, but since in the database they get incremented and default start is '1'
-        // we needed to modify the creation of the workouts by auto-incrementing them
-        // when they are created and giving same starting default of '1'
-        /*for (index in 0 until retrievedWorkouts.size) {
-            Log.d("WORKOUTSLIST", "${retrievedWorkouts[index].id}")
-        }*/
 
         // since the data has all unique names/ids, all workouts should
         // have been inserted into the database
         assert(retrievedWorkouts.size == workouts.size)
 
-        //lets get a pseudo random item in the database and delete it
+        // Begin test to remove a specific [Workout] from the [Workout] database:
+        //  get a pseudo random item in the database and delete it
         val indexToRemove: Int= (0..workouts.size-1).random() // generates random int from 0 to workouts.size-1 included
         val workoutToDelete: Workout = workouts[indexToRemove]
-
-        //Log.d("DELETEWORKOUT", "${workoutToDelete.id}")
-        //Log.d("DELETEWORKOUT", "${retrievedWorkouts[indexToRemove].id}")
 
         // delete the workout chosen pseudo-randomly
         workoutDao.delete(workoutToDelete)
 
-        // check to see if correct workout was removed
-        // if only one workout was removed than size of retrievedWorkouts should be one less than
-        // the size of the workouts list
+        // if only one workout was removed than size of retrievedWorkouts should be
+        // one less than the size of the workouts list
         retrievedWorkouts = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
-        //Log.d("DELETEWORKOUT", "${retrievedWorkouts.size}")
-        //Log.d("DELETEWORKOUT", "${workouts.size}")
         assert(retrievedWorkouts.size == (workouts.size - 1))
 
-        // make sure that the deleted item is no longer in the database
+        // make sure that the deleted item was the item that was actually removed
         val workoutsMap: Map<String, Workout> = retrievedWorkouts.associateBy( {it.name}, {it} )
-
         val containsWorkoutToDelete: Boolean = workoutsMap.containsKey(workoutToDelete.name)
         TestCase.assertEquals(
             "workoutsMap should not contain deleted item",
@@ -413,22 +365,25 @@ class WorkoutDaoTest {
             containsWorkoutToDelete
         )
 
-        // lets delete all workouts
+        // Begin test to delete all workouts:
         workoutDao.deleteWorkouts()
-        // let's make sure there are no workouts in the database
+        // let's make sure there are no workouts in the [Workout] database after calling 'deleteWorkouts'
         retrievedWorkouts = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
         assert(retrievedWorkouts.isEmpty())
 
-        // now let's try to delete previous workout
+        // now let's try to delete previously deleted workout on an empty database
         workoutDao.delete(workoutToDelete)
         retrievedWorkouts = workoutDao.getAllWorkouts().asLiveData().getOrAwaitValue()
         assert(retrievedWorkouts.isEmpty())
     }
 
+    /**
+     *  Checks that [Workout]s inserted are unique by name.
+     */
     @Test
     fun insertingSameName() = runBlocking {
 
-        createWorkouts(workouts)
+        createUniqueWorkouts(workouts)
 
         for (index in 0 until workouts.size) {
             workoutDao.insert(workouts[index])
@@ -452,11 +407,11 @@ class WorkoutDaoTest {
 
         assert(workouts.size == retrievedWorkouts.size)
 
-        // try to insert workout with the same name but different id
+        // Case: insert item with same name but different id (should not insert)
         val workoutToCopy: Workout = workouts[0]
-        val workoutWithSameName: Workout =
+        val workoutWithSameName =
             Workout(
-                7,
+                workouts.size * 2,
                 workoutToCopy.repTimer,
                 workoutToCopy.restTimer,
                 workoutToCopy.numberReps,
@@ -474,28 +429,81 @@ class WorkoutDaoTest {
             workouts.size,
             retrievedWorkouts.size
         )
+    }
 
-        // try to insert a workout with same id but different workout name
-        val workoutWithSameId: Workout =
-            Workout(
-                1,
-                workoutToCopy.repTimer,
-                workoutToCopy.restTimer,
-                workoutToCopy.numberReps,
-                "This workout name has not yet been used."
-            )
+    /**
+     *  Checks that [Workout]s inserted are unique by id.
+     */
+    @Test
+    fun insertSameId() = runBlocking {
 
-        workoutDao.insert(workoutWithSameId)
+        createUniqueWorkouts(workouts)
+
+        for (index in 0 until workouts.size) {
+            workoutDao.insert(workouts[index])
+        }
+
+        var retrievedWorkouts: List<Workout> =
+            workoutDao.getAllWorkouts()
+                .asLiveData()
+                .getOrAwaitValue()
+
+        TestCase.assertEquals(
+            "Number of inserted workouts does not match number of retrieved workouts.",
+            workouts.size,
+            retrievedWorkouts.size
+        )
+
+        // Case: insert items with same id and name (should not insert)
+        workoutDao.insert(workouts[0])
+
         retrievedWorkouts =
             workoutDao.getAllWorkouts()
                 .asLiveData()
                 .getOrAwaitValue()
 
         TestCase.assertEquals(
-            "No item should have been inserted since workout has the same 'id' as a previous workout.",
+            "Number of valid insertions into the database does not match number of retrieved workouts",
+            workouts.size,
+            retrievedWorkouts.size
+        )
+
+        for (index in 0 until workouts.size) {
+            workoutDao.insert(workouts[index])
+        }
+
+        retrievedWorkouts =
+            workoutDao.getAllWorkouts()
+                .asLiveData()
+                .getOrAwaitValue()
+
+        TestCase.assertEquals(
+            "Number of valid insertions into the database does not match number of retrieved workouts",
+            workouts.size,
+            retrievedWorkouts.size
+        )
+
+        // Case: insert item with same id but different name (should not insert)
+        val workoutSameIdDiffName =
+            Workout(
+                workouts[1].id,
+                workouts[1].repTimer,
+                workouts[1].restTimer,
+                workouts[1].numberReps,
+                "This workout name has not yet been used."
+            )
+
+        workoutDao.insert(workoutSameIdDiffName)
+
+        retrievedWorkouts =
+            workoutDao.getAllWorkouts()
+                .asLiveData()
+                .getOrAwaitValue()
+
+        TestCase.assertEquals(
+            "Workout with same id was inserted.",
             workouts.size,
             retrievedWorkouts.size
         )
     }
-
 }

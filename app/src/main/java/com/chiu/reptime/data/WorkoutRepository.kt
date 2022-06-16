@@ -1,7 +1,6 @@
 package com.chiu.reptime.data
 
 import androidx.annotation.WorkerThread
-import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.Flow
 
 class WorkoutRepository(private val workoutDao: WorkoutDao){

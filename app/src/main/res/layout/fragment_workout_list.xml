@@ -1,14 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.WorkoutListFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Workout_Fragment" />
+        android:id="@+id/name_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="NAME"
+        app:layout_constraintEnd_toStartOf="@+id/reps_label"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
 
-</FrameLayout>
+        app:layout_constraintBottom_toTopOf="@+id/label_separator_guideline"
+        tools:text="NAME" />
+
+    <TextView
+        android:id="@+id/reps_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="REPS"
+        app:layout_constraintEnd_toStartOf="@+id/rep_time_label"
+        app:layout_constraintStart_toEndOf="@+id/name_label"
+        app:layout_constraintTop_toTopOf="@+id/name_label"
+        tools:text="REPS" />
+
+    <TextView
+        android:id="@+id/rep_time_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="REP TIME"
+        app:layout_constraintStart_toEndOf="@+id/reps_label"
+        app:layout_constraintEnd_toStartOf="@+id/rest_time_label"
+        app:layout_constraintTop_toTopOf="@+id/name_label"
+        tools:text="REP TIME" />
+
+    <TextView
+        android:id="@+id/rest_time_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="REST TIME"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/rep_time_label"
+        app:layout_constraintTop_toTopOf="@+id/name_label"
+        tools:text="REST TIME" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/workouts_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_separator_guideline"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <View
+        android:id="@+id/test_view"
+        android:layout_width="5dp"
+        android:layout_height="50dp"
+        android:background="@color/black"
+        app:layout_constraintStart_toStartOf="@id/name_label"
+        app:layout_constraintEnd_toEndOf="@id/reps_label"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/label_separator_guideline"
+        />
+
+    <View
+        android:id="@+id/test_view2"
+        android:layout_width="5dp"
+        android:layout_height="50dp"
+        android:background="@color/black"
+        app:layout_constraintStart_toStartOf="@id/reps_label"
+        app:layout_constraintEnd_toEndOf="@id/rep_time_label"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/label_separator_guideline"
+        />
+
+    <View
+        android:id="@+id/test_view3"
+        android:layout_width="5dp"
+        android:layout_height="50dp"
+        android:background="@color/black"
+        app:layout_constraintStart_toStartOf="@id/rep_time_label"
+        app:layout_constraintEnd_toEndOf="@id/rest_time_label"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/label_separator_guideline"
+        />
+
+    <View
+        android:id="@+id/menu_divider"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/black"
+        app:layout_constraintTop_toTopOf="@id/label_separator_guideline"
+        app:layout_constraintBottom_toBottomOf="@id/label_separator_guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/label_separator_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".1" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

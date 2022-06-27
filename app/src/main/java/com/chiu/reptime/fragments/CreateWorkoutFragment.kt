@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.chiu.reptime.WorkoutApplication
 import com.chiu.reptime.WorkoutViewModel
+import com.chiu.reptime.data.Workout
 import com.chiu.reptime.models.RepTimer
 import com.chiu.reptime.models.RestTimer
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -301,9 +303,39 @@ class CreateWorkoutFragment : Fragment() {
             .setMessage("Are you sure you want to save?")
             .setCancelable(false)
             .setNeutralButton("CANCEL") {_, _ ->}
-            .setNegativeButton("NO") {_, _ ->}
+            .setNegativeButton("NO") {_, _ ->
+                //Log.d("HOUR REP TIME: ", binding.hourRepTimerNp.value.toString())
+                //Log.d("SECOND REST TIME: ", binding.secondRestTimerNp.value.toString())
+                //Log.d("NUMBER REPS: ", binding.numberRepInput.text.toString())
+            }
             .setPositiveButton("YES") {_, _ ->
                 // save workout to database
+                // id???
+                val workoutId = 0
+                // rep timer
+                val repHour: Int = binding.hourRepTimerNp.value
+                val repMinute: Int = binding.minuteRepTimerNp.value
+                val repSecond: Int = binding.secondRepTimerNp.value
+                val repTimer = RepTimer(repHour, repMinute, repSecond)
+                // rest timer
+                val restMinute: Int = binding.minuteRestTimerNp.value
+                val restSecond: Int = binding.secondRestTimerNp.value
+                val restTimer = RestTimer(restMinute, restSecond)
+                // number reps
+                val numberReps: Int = binding.numberRepInput.text.toString().toInt()
+                // name
+                val workoutName: String = binding.workoutNameInput.text.toString().trim()
+                // create workout from current parameters
+                var currentWorkout: Workout =
+                    Workout(
+                        workoutId,
+                        repTimer,
+                        restTimer,
+                        numberReps,
+                        workoutName
+                    )
+
+                viewModel.insert(currentWorkout)
             }
             .show()
     }
@@ -312,9 +344,7 @@ class CreateWorkoutFragment : Fragment() {
      *  Action to take when the 'Save' button is clicked.
      */
     private fun onSaveWorkout() {
-        binding.saveWorkoutBtn.setOnClickListener {
             showSaveWorkoutConfirmation()
-        }
     }
 
     /**

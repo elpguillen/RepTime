@@ -12,7 +12,8 @@
         <entry key="..\:/Projects/RepTime/app/src/main/res/layout/fragment_create_workout.xml" value="0.25" />
         <entry key="..\:/Projects/RepTime/app/src/main/res/layout/fragment_history.xml" value="0.19882246376811594" />
         <entry key="..\:/Projects/RepTime/app/src/main/res/layout/fragment_workout.xml" value="0.25" />
-        <entry key="..\:/Projects/RepTime/app/src/main/res/layout/fragment_workout_list.xml" value="0.19882246376811594" />
+        <entry key="..\:/Projects/RepTime/app/src/main/res/layout/fragment_workout_list.xml" value="0.25" />
+        <entry key="..\:/Projects/RepTime/app/src/main/res/layout/workout_list_item.xml" value="0.25" />
         <entry key="..\:/Projects/RepTime/app/src/main/res/menu/bottom_nav_menu.xml" value="0.2921875" />
       </map>
     </option>

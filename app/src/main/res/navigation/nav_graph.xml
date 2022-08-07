@@ -9,11 +9,7 @@
         android:id="@+id/createWorkoutFragment"
         android:name="com.chiu.reptime.fragments.CreateWorkoutFragment"
         android:label="fragment_create_workout"
-        tools:layout="@layout/fragment_create_workout" >
-        <action
-            android:id="@+id/action_createWorkoutFragment_to_workoutFragment"
-            app:destination="@id/workoutFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_create_workout" />
     <fragment
         android:id="@+id/workoutListFragment"
         android:name="com.chiu.reptime.fragments.WorkoutListFragment"
@@ -24,21 +20,6 @@
         android:name="com.chiu.reptime.fragments.HistoryFragment"
         android:label="fragment_history"
         tools:layout="@layout/fragment_history" />
-    <fragment
-        android:id="@+id/workoutFragment"
-        android:name="com.chiu.reptime.fragments.WorkoutFragment"
-        android:label="fragment_workout"
-        tools:layout="@layout/fragment_workout" >
-        <argument
-            android:name="rep_timer"
-            app:argType="com.chiu.reptime.models.RepTimer" />
-        <argument
-            android:name="rest_timer"
-            app:argType="com.chiu.reptime.models.RestTimer" />
-        <argument
-            android:name="number_of_reps"
-            app:argType="integer" />
-    </fragment>
     <fragment
         android:id="@+id/startWorkoutFragment"
         android:name="com.chiu.reptime.fragments.StartWorkoutFragment"

@@ -55,23 +55,14 @@
         app:layout_constraintTop_toBottomOf="@id/create_workout_guideline" />
 
     <Button
-        android:id="@+id/start_workout_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/start"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/save_workout_btn"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
         android:id="@+id/save_workout_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/start_workout_btn"
-        app:layout_constraintTop_toTopOf="@id/start_workout_btn" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/number_rep_input" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/create_workout_guideline"
@@ -143,7 +134,6 @@
         android:hint="@string/number_reps_label"
         android:inputType="number"
         android:minHeight="48dp"
-        app:layout_constraintBottom_toTopOf="@+id/start_workout_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/minute_rest_timer_np" />

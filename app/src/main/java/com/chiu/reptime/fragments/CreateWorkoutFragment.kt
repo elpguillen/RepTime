@@ -217,11 +217,6 @@ class CreateWorkoutFragment : Fragment() {
         // start listening for any change in the number of repetitions
         setUpNumberRepsChangeListener(sharedPreferences)
 
-        // start an onClickListener for when user presses Start Workout Button
-        binding.startWorkoutBtn.setOnClickListener {
-            onStartWorkout(it)
-        }
-
         // start an onClickListener for when user presses Save Workout Button
         binding.saveWorkoutBtn.setOnClickListener {
             // save workout to Room database
@@ -345,28 +340,6 @@ class CreateWorkoutFragment : Fragment() {
      */
     private fun onSaveWorkout() {
             showSaveWorkoutConfirmation()
-    }
-
-    /**
-     *  Action to take when the 'Start' button is clicked.
-     */
-    private fun onStartWorkout(view: View) {
-
-        // Get the RepTimer and ResTimer from [NumberPicker] values
-        val repTimer = getRepTimer()
-        val restTimer = getRestTimer()
-
-        // make sure to check for valid input
-        // what if someone doesn't put any input?
-        var numberRepsString: String = binding.numberRepInput.text.toString()
-        val numberReps: Int = if (numberRepsString != "") numberRepsString.toInt() else 0
-
-        val action =
-            CreateWorkoutFragmentDirections.
-            actionCreateWorkoutFragmentToWorkoutFragment(
-                repTimer, restTimer, numberReps)
-
-        view.findNavController().navigate(action)
     }
 
     private fun getRepTimer(): RepTimer{

@@ -130,13 +130,13 @@ class StartWorkoutFragment : Fragment() {
                  *  This will ensure that once the timer hits '0', the label that updates
                  *  the number of reps is synchronized with the timer.
                  */
-                if (timeLeft == 0L && numReps > 0) {
+                /*if (timeLeft == 0L && numReps > 0) {
                     binding.remainingRepsLabel.text = (numReps - 1).toString()
                     with(sharedPreferences.edit()) {
                         putInt(getString(R.string.current_number_reps_key), numReps - 1)
                         apply()
                     }
-                }
+                }*/
             }
 
             override fun onFinish() {
@@ -146,6 +146,11 @@ class StartWorkoutFragment : Fragment() {
                  *      else:
                  *         start another rep timer
                  */
+                binding.remainingRepsLabel.text = (numReps - 1).toString()
+                with(sharedPreferences.edit()) {
+                    putInt(getString(R.string.current_number_reps_key), numReps - 1)
+                    apply()
+                }
                 if (numReps > 1) {
                     /*  Check to see when no rest time is set:
                      *    no rest time given means jump straight into the
@@ -318,6 +323,8 @@ class StartWorkoutFragment : Fragment() {
             // cancel for now until implement pause feature
             cancelTimers()
 
+            Log.v("ONPAUSE", sharedPreferences.getInt(getString(R.string.current_number_reps_key), 0).toString())
+
             it.visibility = View.INVISIBLE
             binding.startBtn.visibility = View.INVISIBLE
             binding.resetBtn.visibility = View.VISIBLE
@@ -331,6 +338,8 @@ class StartWorkoutFragment : Fragment() {
             binding.pauseBtn.visibility = View.VISIBLE
 
             val currentNumReps = sharedPreferences.getInt(getString(R.string.current_number_reps_key), totalReps)
+
+            Log.v("ONRESUME", sharedPreferences.getInt(getString(R.string.current_number_reps_key), 0).toString())
 
             if (inRepState) {
                 timeLeft = sharedPreferences.getLong(getString(R.string.remaining_rep_timer_key), 0)

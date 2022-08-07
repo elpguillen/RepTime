@@ -13,8 +13,13 @@
         android:icon="@drawable/ic_workout_list_foreground" />
 
     <item
+        android:id="@+id/startWorkoutFragment"
+        android:title="@string/start_workout_bottom_nav_tab"
+        android:icon="@drawable/ic_home_foreground" />
+
+    <!-- <item
         android:id="@+id/historyFragment"
         android:title="@string/history_bottom_nav_tab"
-        android:icon="@drawable/ic_history_foreground" />
+        android:icon="@drawable/ic_history_foreground" /> -->
 
 </menu>

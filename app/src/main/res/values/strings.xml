@@ -3,11 +3,15 @@
     <string name="create_workout_bottom_nav_tab">Create Workout</string>
     <string name="choose_workout_bottom_nav_tab">Choose Workout</string>
     <string name="history_bottom_nav_tab">History</string>
+    <string name="start_workout_bottom_nav_tab">Start Workout</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="start">Start</string>
     <string name="save">Save</string>
+    <string name="reset">Reset</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
     <string name="hour_unit">h</string>
     <string name="minute_unit">m</string>
     <string name="second_unit">s</string>
@@ -25,4 +29,15 @@
     <string name="rest_timer_second_key">com.chiu.reptime.REST_TIMER_SECOND_KEY</string>
     <string name="workout_name_key">com.chiu.reptime.WORKOUT_NAME_KEY</string>
     <string name="number_reps_key">com.chiuu.reptime.NUMBER_REPS_KEY</string>
+
+    <string name="current_rep_timer_hour_key">com.chiu.reptime.CURRENT_REP_TIMER_HOUR_KEY</string>
+    <string name="current_rep_timer_minute_key">com.chiu.reptime.CURRENT_REP_TIMER_MINUTE_KEY</string>
+    <string name="current_rep_timer_second_key">com.chiu.reptime.CURRENT_REP_TIMER_SECOND_KEY</string>
+    <string name="current_rest_timer_minute_key">com.chiu.reptime.CURRENT_REST_TIMER_MINUTE_KEY</string>
+    <string name="current_rest_timer_second_key">com.chiu.reptime.CURRENT_REST_TIMER_SECOND_KEY</string>
+    <string name="current_number_reps_key">com.chiu.reptime>CURRENT_NUMBER_REPS_KEY</string>
+
+    <string name="remaining_rep_timer_key">com.chiu.reptime.REMAINING_REP_TIMER_KEY</string>
+    <string name="remaining_rest_timer_key">com.chiu.reptime.REMAINING_REST_TIMER_KEY</string>
+
 </resources>

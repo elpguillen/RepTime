@@ -39,4 +39,8 @@
             android:name="number_of_reps"
             app:argType="integer" />
     </fragment>
+    <fragment
+        android:id="@+id/startWorkoutFragment"
+        android:name="com.chiu.reptime.fragments.StartWorkoutFragment"
+        android:label="StartWorkoutFragment" />
 </navigation>

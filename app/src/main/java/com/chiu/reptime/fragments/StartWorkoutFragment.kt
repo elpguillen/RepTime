@@ -163,7 +163,7 @@ class StartWorkoutFragment : Fragment() {
                     }
 
                 } else {
-                    onWorkoutComplete()
+                    onWorkoutComplete(sharedPreferences)
                 }
             }
         }.start()
@@ -271,8 +271,18 @@ class StartWorkoutFragment : Fragment() {
      *  Events to happen after a workout is completed, such as
      *  changing UI display, updating history, etc.
      */
-    private fun onWorkoutComplete() {
+    private fun onWorkoutComplete(sharedPreferences: SharedPreferences) {
         binding.timerLabel.text = "Done"
+
+        // reset the count for the current number of reps for next iteration
+        with (sharedPreferences.edit()) {
+            putInt(getString(R.string.current_number_reps_key), totalReps)
+            apply()
+        }
+
+        // only allow reset
+        binding.pauseBtn.visibility = View.INVISIBLE
+        binding.resumeBtn.visibility = View.INVISIBLE
     }
 
     /**
@@ -323,7 +333,7 @@ class StartWorkoutFragment : Fragment() {
             // cancel for now until implement pause feature
             cancelTimers()
 
-            Log.v("ONPAUSE", sharedPreferences.getInt(getString(R.string.current_number_reps_key), 0).toString())
+            //Log.v("ONPAUSE", sharedPreferences.getInt(getString(R.string.current_number_reps_key), 0).toString())
 
             it.visibility = View.INVISIBLE
             binding.startBtn.visibility = View.INVISIBLE
@@ -339,7 +349,7 @@ class StartWorkoutFragment : Fragment() {
 
             val currentNumReps = sharedPreferences.getInt(getString(R.string.current_number_reps_key), totalReps)
 
-            Log.v("ONRESUME", sharedPreferences.getInt(getString(R.string.current_number_reps_key), 0).toString())
+            //Log.v("ONRESUME", sharedPreferences.getInt(getString(R.string.current_number_reps_key), 0).toString())
 
             if (inRepState) {
                 timeLeft = sharedPreferences.getLong(getString(R.string.remaining_rep_timer_key), 0)

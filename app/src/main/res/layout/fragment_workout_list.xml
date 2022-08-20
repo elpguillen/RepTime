@@ -16,7 +16,6 @@
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-
         app:layout_constraintBottom_toTopOf="@+id/label_separator_guideline"
         tools:text="NAME" />
 

@@ -9,6 +9,8 @@
         android:id="@+id/name_label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:padding="8dp"
         android:gravity="center"
         android:maxLines="1"
         android:ellipsize="end"
@@ -17,6 +19,7 @@
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:text="NAME" />
 
     <TextView
@@ -24,32 +27,40 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/rep_time_label"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/name_label"
-        app:layout_constraintTop_toTopOf="@id/name_label"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="REPS" />
 
     <TextView
         android:id="@+id/rep_time_label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:gravity="center"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/rest_time_label"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/reps_label"
-        app:layout_constraintTop_toTopOf="@id/name_label"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="REP TIME" />
 
     <TextView
         android:id="@+id/rest_time_label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:gravity="center"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/rep_time_label"
-        app:layout_constraintTop_toTopOf="@id/name_label"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="REST TIME" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
